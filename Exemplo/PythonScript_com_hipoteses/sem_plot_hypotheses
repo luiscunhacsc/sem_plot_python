@@ -1,0 +1,83 @@
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+from matplotlib.patches import FancyArrowPatch
+
+fig, ax = plt.subplots(figsize=(16, 12))
+ax.set_xlim(0, 15)
+ax.set_ylim(0, 12)
+ax.axis('off')
+
+box_w, box_h = 2.2, 1.0
+
+def draw_box(text, xy):
+    box = patches.FancyBboxPatch(xy, box_w, box_h,
+                                 boxstyle="round,pad=0.1", ec="black", fc="lightblue")
+    ax.add_patch(box)
+    ax.text(xy[0] + box_w / 2, xy[1] + box_h / 2, text,
+            ha='center', va='center', fontsize=10, weight='bold')
+
+def draw_arrow(start_xy, end_xy, label=None, curve=False, offset=0.3, label_offset=(0, 0.2), label_below=False):
+    x0, y0 = start_xy[0] + box_w, start_xy[1] + box_h / 2
+    x1, y1 = end_xy[0], end_xy[1] + box_h / 2
+    if curve:
+        style = f"arc3,rad={offset}"
+    else:
+        style = "arc3,rad=0"
+    arrow = FancyArrowPatch((x0, y0), (x1, y1),
+                            connectionstyle=style,
+                            arrowstyle='->', mutation_scale=15, color='black')
+    ax.add_patch(arrow)
+    if label:
+        label_x = (x0 + x1) / 2 + label_offset[0]
+        label_y = (y0 + y1) / 2 - label_offset[1] if label_below else (y0 + y1) / 2 + label_offset[1]
+        ax.text(label_x, label_y, label, fontsize=10, color='darkred', weight='bold')
+
+# Coordenadas ajustadas
+positions = {
+    'IDL': (1, 10),
+    'CC': (1, 8),
+    'SS': (1, 6),
+    'PS': (1, 4),
+    'CompDigitais': (4, 8),
+    'Atitude': (7.5, 10),
+    'NormaSubj': (7.5, 8),
+    'Autoeficacia': (7.5, 6),
+    'Intencao': (10.5, 8),
+    'Comportamento': (13, 8),
+}
+
+# Desenhar blocos
+for label, pos in positions.items():
+    draw_box(label, pos)
+
+# Relações com hipóteses numeradas
+draw_arrow(positions['IDL'], positions['CompDigitais'])
+draw_arrow(positions['CC'], positions['CompDigitais'])
+draw_arrow(positions['SS'], positions['CompDigitais'])
+draw_arrow(positions['PS'], positions['CompDigitais'])
+
+draw_arrow(positions['CompDigitais'], positions['Atitude'], label='H1')
+draw_arrow(positions['CompDigitais'], positions['NormaSubj'], label='H2')
+draw_arrow(positions['CompDigitais'], positions['Autoeficacia'], label='H3')
+
+# H7 ainda mais por baixo da seta curva
+draw_arrow(positions['CompDigitais'], positions['Intencao'], label='H7', curve=True, offset=0.35, label_offset=(0.2, 0.8), label_below=True)
+
+draw_arrow(positions['Atitude'], positions['Intencao'], label='H4')
+draw_arrow(positions['NormaSubj'], positions['Intencao'], label='H5')
+draw_arrow(positions['Autoeficacia'], positions['Intencao'], label='H6')
+
+draw_arrow(positions['Intencao'], positions['Comportamento'], label='H8')
+
+# Autoeficacia → Comportamento (seta vertical por baixo)
+start = (positions['Autoeficacia'][0] + box_w, positions['Autoeficacia'][1] + box_h / 2)
+end = (positions['Comportamento'][0] + box_w / 2, positions['Comportamento'][1])
+arrow = FancyArrowPatch(start, end, arrowstyle='->', mutation_scale=15, color='black')
+ax.add_patch(arrow)
+ax.text((start[0] + end[0]) / 2, (start[1] + end[1]) / 2 - 0.5, 'H9',
+        fontsize=10, color='darkred', weight='bold')
+
+plt.title("Modelo D01 – Competências Digitais e Comportamento (SEM Corrigido, Hipóteses Numeradas)",
+          fontsize=14, weight='bold')
+plt.tight_layout()
+plt.show()
