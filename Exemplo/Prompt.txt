@@ -1,0 +1,23 @@
+Podias, por favor, adaptar o código na imagem anexa para desenhar o modelo descrito por este script:
+
+IDL  =~ IDL1 + IDL2 + IDL3 + IDL4
+CC   =~ CC1 + CC2 + CC3 + CC4 + CC5
+SS   =~ SS1 + SS2 + SS3 + SS4
+PS   =~ PS1 + PS2 + PS3 + PS4
+
+CompDigitais =~ IDL + CC + SS + PS 
+
+Atitude       =~ ATD1 + ATD2 + ATD3 + ATD4 + ATD5
+NormaSubj     =~ SN1 + SN2 + SN3
+Autoeficacia  =~ DES1 + DES2 + DES3 + DES4 + DES5 + DES6 + DES7
+
+Intencao      =~ DEI1 + DEI2 + DEI3 + DEI4 + DEI5 + DEI6
+Comportamento =~ DEB1 + DEB2 + DEB3 + DEB4
+
+Atitude       ~ CompDigitais
+NormaSubj     ~ CompDigitais
+Autoeficacia  ~ CompDigitais
+
+Intencao      ~ Atitude + NormaSubj + Autoeficacia + CompDigitais
+
+Comportamento ~ Intencao + Autoeficacia
